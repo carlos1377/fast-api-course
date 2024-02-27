@@ -1,12 +1,8 @@
 from fastapi import FastAPI
-from os import getenv
-from dotenv import load_dotenv
-
-
-load_dotenv()
-API_KEY = getenv('API_KEY')
+from routers import router
 
 app = FastAPI()
+app.include_router(router)
 
 
 @app.get('/')
