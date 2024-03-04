@@ -1,6 +1,5 @@
 import pytest
 from app.schemas.category import Category
-from pydantic import ValidationError
 
 
 def test_category_schema():
