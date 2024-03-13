@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, Query
 from app.schemas.category import Category, CategoryOutput
 from sqlalchemy.orm import Session
 from app.routes.deps import get_db_session, auth
 from app.use_cases.category import CategoryUseCases
+from fastapi_pagination import Page, add_pagination
 from typing import List
 
 router = APIRouter(prefix='/category',
@@ -24,14 +25,16 @@ def add_category(
 
 
 @router.get(
-    '/list', response_model=List[CategoryOutput],
+    '/list', response_model=Page[CategoryOutput],
     description='List Categories'
 )
 def list_categories(
+    page: int = Query(1, ge=1, description='Page number'),
+    size: int = Query(50, ge=1, le=100, description='Size of page'),
     db_session: Session = Depends(get_db_session)
 ):
     uc = CategoryUseCases(db_session=db_session)
-    response = uc.list_categories()
+    response = uc.list_categories(page=page, size=size)
 
     return response
 
